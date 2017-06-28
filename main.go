@@ -1,16 +1,17 @@
 package main
 
 import (
-	"fmt"
 	"github.com/VojtechVitek/go-trello"
-	Util "github.com/faaaar/R/util"
+	"github.com/faaaar/R/util"
 	"log"
 )
 
 func main() {
-	appKey := Util.GetIniConfig("Authorize", "appKey")
-	token := Util.GetIniConfig("Authorize", "token")
-	username := Util.GetIniConfig("Authorize", "username")
+	util.GetThisWeekDate()
+
+	appKey := util.GetIniConfig("Authorize", "appKey")
+	token := util.GetIniConfig("Authorize", "token")
+	username := util.GetIniConfig("Authorize", "username")
 
 	trello, err := trello.NewAuthClient(appKey, &token)
 	if err != nil {
@@ -29,7 +30,7 @@ func main() {
 
 	if len(boards) > 0 {
 		board := boards[0]
-		fmt.Printf("* %v (%v)\n", board.Name, board.ShortUrl)
+		log.Printf("* %v (%v)\n", board.Name, board.ShortUrl)
 
 		lists, err := board.Lists()
 		if err != nil {
@@ -37,11 +38,11 @@ func main() {
 		}
 
 		for _, list := range lists {
-			fmt.Println("   - ", list.Name)
+			log.Println("   - ", list.Name)
 
 			cards, _ := list.Cards()
 			for _, card := range cards {
-				fmt.Println("      + ", card.Name)
+				log.Println("      + ", card.Name)
 			}
 		}
 	}
