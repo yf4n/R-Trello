@@ -7,48 +7,33 @@ import (
 	"time"
 )
 
-func main() {
-	util.GetThisWeekDate()
+var p = log.Println
 
-	appKey := util.GetIniConfig("Authorize", "appKey")
-	token := util.GetIniConfig("Authorize", "token")
-	username := util.GetIniConfig("Authorize", "username")
+func main() {
+	appKey := util.GetIniConfig("authorize", "appKey")
+	token := util.GetIniConfig("authorize", "token")
+	username := util.GetIniConfig("filter", "username")
+	outputPath := util.GetIniConfig("path", "output")
 
 	trello, err := trello.NewAuthClient(appKey, &token)
-	if err != nil {
-		log.Fatal(err)
-	}
+	util.CheckError(err)
 
-	user, err := trello.Member(username)
-	if err != nil {
-		log.Fatal(err)
-	}
+	user, _ := trello.Member(username)
 	userid := user.Id
 
-	boards, err := user.Boards()
-	if err != nil {
-		log.Fatal(err)
-	}
+	boards, _ := user.Boards()
 
-	startDay := time.Now()
+	timeNow := time.Now()
+	weekTimestampRange := util.GetWeekDateRange(timeNow)
+	startTs := weekTimestampRange["startTs"]
+	endTs := weekTimestampRange["endTs"]
+	startTime := util.GetDateStringWithFormat(startTs, "2006-01-02")
+	endTime := util.GetDateStringWithFormat(endTs, "2006-01-02")
+	markdownStr := "# " + startTime + " - " + endTime + " 工作内容 \n"
 
-	for startDay.Weekday() != time.Monday {
-		startDay = startDay.AddDate(0, 0, -1)
-	}
-
-	startStr := startDay.Format("2006-01-02")
-	startF, _ := time.Parse("2006-01-02", startStr)
-	startTs := startF.Unix()
-
-	log.Println(startTs)
 	for _, board := range boards {
-		boardName := board.Name
-		log.Printf("* %v (%v)\n", boardName, board.ShortUrl)
-
-		cards, err := board.Cards()
-		if err != nil {
-			log.Fatal(err)
-		}
+		// boardName := board.Name
+		cards, _ := board.Cards()
 
 		for _, card := range cards {
 			isOwnCard := false
@@ -62,22 +47,34 @@ func main() {
 
 			if isOwnCard {
 				if card.Due != "" {
-					t, err := time.Parse(time.RFC3339, card.Due)
-					if err != nil {
-						log.Fatalln(err)
-					}
+					t, _ := time.Parse(time.RFC3339, card.Due)
+					ts := t.Unix()
 
-					log.Println(t.Weekday(), time.Now().Unix())
+					if ts > startTs && ts < endTs {
+						markdownStr = markdownStr + "## " + card.Name + "（完成时间: " + util.GetDateString(ts) + ")" + "\n"
+						markdownStr = markdownStr + card.Desc + "\n"
+
+						lists, _ := card.Checklists()
+						for _, list := range lists {
+							// p(list.Name)
+							markdownStr += "### " + list.Name + "\n"
+
+							for _, item := range list.CheckItems {
+								// p(item.Name)
+								markdownStr += "- " + item.Name + "\n"
+							}
+
+							markdownStr += "\n"
+						}
+					}
 				}
 			}
 		}
-		// for _, list := range lists {
-		//   log.Println("   - ", list.Name)
-		//
-		//   cards, _ := list.Cards()
-		//   for _, card := range cards {
-		//     log.Println("      + ", card.Name)
-		//   }
-		// }
 	}
+	markdownStr += "--\n"
+	markdownStr += "*此周报由 周报生成器0.1 生成*\n"
+	markdownStr += "*开源地址: https://github.com/faaaar/R*\n"
+
+	util.WriteFile(outputPath+"/"+util.GetTodayDateString()+".md", markdownStr)
+	util.SendMail(outputPath+"/"+util.GetTodayDateString()+".md", "["+startTime+"-"+endTime+"]")
 }
