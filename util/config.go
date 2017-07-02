@@ -4,9 +4,10 @@ import (
 	"flag"
 	"github.com/larspensjo/config"
 	"log"
+	"os"
 )
 
-var configFile = flag.String("configfile", "config.ini", "General configuration file")
+var configFile = flag.String("configfile", os.Getenv("HOME")+"/.R/config.ini", "General configuration file")
 var INIT_CONFIG = make(map[string]string)
 
 func GetIniConfig(t string, k string) string {

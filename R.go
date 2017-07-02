@@ -10,11 +10,13 @@ import (
 var p = log.Println
 
 func main() {
+	p("正在读取配置文件...")
 	appKey := util.GetIniConfig("authorize", "appKey")
 	token := util.GetIniConfig("authorize", "token")
 	username := util.GetIniConfig("filter", "username")
 	outputPath := util.GetIniConfig("path", "output")
 
+	p("请求&&处理数据中...")
 	trello, err := trello.NewAuthClient(appKey, &token)
 	util.CheckError(err)
 
@@ -75,6 +77,10 @@ func main() {
 	markdownStr += "*此周报由 周报生成器0.1 生成*\n"
 	markdownStr += "*开源地址: https://github.com/faaaar/R*\n"
 
+	p("正在生成markdown到" + outputPath + "...")
 	util.WriteFile(outputPath+"/"+util.GetTodayDateString()+".md", markdownStr)
-	util.SendMail(outputPath+"/"+util.GetTodayDateString()+".md", "["+startTime+"-"+endTime+"]")
+	p("正在发送邮件...")
+	util.SendMail(outputPath+"/"+util.GetTodayDateString()+".md", "("+startTime+" - "+endTime+")")
+
+	p("完成...")
 }
