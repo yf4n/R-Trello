@@ -1,8 +1,11 @@
 package util
 
 import (
+	"log"
 	"time"
 )
+
+var p = log.Println
 
 var days = map[string]int{
 	"Sunday":    0,
@@ -19,9 +22,11 @@ func GetDateString(ts int64) string {
 
 	return time.Unix(ts, 0).Format(format)
 }
+
 func GetDateStringWithFormat(ts int64, format string) string {
 	return time.Unix(ts, 0).Format(format)
 }
+
 func GetTodayDateString() string {
 	ts := time.Now().Unix()
 
@@ -31,8 +36,10 @@ func GetTodayDateString() string {
 func GetWeekDateRange(t time.Time) map[string]int64 {
 	weekday := days[time.Weekday.String(t.Weekday())]
 	ts := t.Unix()/86400*86400 - 28800
-	endTs := ts + int64((7-weekday)/7*86400-1)
+
+	endTs := ts + int64((7-weekday)%7*86400)
 	startTs := endTs - int64(518400)
+	endTs -= 1
 
 	return map[string]int64{
 		"startTs": startTs,

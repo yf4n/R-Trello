@@ -31,7 +31,7 @@ func main() {
 	endTs := weekTimestampRange["endTs"]
 	startTime := util.GetDateStringWithFormat(startTs, "2006-01-02")
 	endTime := util.GetDateStringWithFormat(endTs, "2006-01-02")
-	markdownStr := "# " + startTime + " - " + endTime + " 工作内容 \n"
+	markdownStr := "# " + startTime + " - " + endTime + " 工作内容 \n\n"
 
 	for _, board := range boards {
 		// boardName := board.Name
@@ -54,7 +54,7 @@ func main() {
 
 					if ts > startTs && ts < endTs {
 						markdownStr = markdownStr + "## " + card.Name + "（完成时间: " + util.GetDateString(ts) + ")" + "\n"
-						markdownStr = markdownStr + card.Desc + "\n"
+						markdownStr = markdownStr + card.Desc + "\n\n"
 
 						lists, _ := card.Checklists()
 						for _, list := range lists {
@@ -77,6 +77,7 @@ func main() {
 	markdownStr += "*此周报由 周报生成器0.1 生成*\n"
 	markdownStr += "*开源地址: https://github.com/faaaar/R*\n"
 
+	p(markdownStr)
 	p("正在生成markdown到" + outputPath + "...")
 	util.WriteFile(outputPath+"/"+util.GetTodayDateString()+".md", markdownStr)
 	p("正在发送邮件...")
