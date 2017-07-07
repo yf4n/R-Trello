@@ -58,11 +58,9 @@ func main() {
 
 						lists, _ := card.Checklists()
 						for _, list := range lists {
-							// p(list.Name)
 							markdownStr += "### " + list.Name + "\n"
 
 							for _, item := range list.CheckItems {
-								// p(item.Name)
 								markdownStr += "- " + item.Name + "\n"
 							}
 
@@ -74,14 +72,14 @@ func main() {
 		}
 	}
 	markdownStr += "--\n"
-	markdownStr += "*此周报由 周报生成器0.1 生成*\n"
+	markdownStr += "*此周报由 周报生成器 0.1 生成*\n"
 	markdownStr += "*开源地址: https://github.com/faaaar/R*\n"
 
 	p(markdownStr)
 	p("正在生成markdown到" + outputPath + "...")
 	util.WriteFile(outputPath+"/"+util.GetTodayDateString()+".md", markdownStr)
 	p("正在发送邮件...")
-	util.SendMail(outputPath+"/"+util.GetTodayDateString()+".md", "("+startTime+" - "+endTime+")")
+	// util.SendMail(outputPath+"/"+util.GetTodayDateString()+".md", "("+startTime+" - "+endTime+")")
 
 	p("完成...")
 }
