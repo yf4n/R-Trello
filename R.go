@@ -30,7 +30,7 @@ func main() {
 	startTs := weekTimestampRange["startTs"]
 	endTs := weekTimestampRange["endTs"]
 	startTime := util.GetDateStringWithFormat(startTs, "2006-01-02")
-	endTime := util.GetDateStringWithFormat(endTs, "2006-01-02")
+	endTime := util.GetDateStringWithFormat(endTs-1, "2006-01-02")
 	markdownStr := "# " + startTime + " - " + endTime + " 工作内容 \n\n"
 
 	for _, board := range boards {
@@ -53,7 +53,7 @@ func main() {
 					ts := t.Unix()
 
 					if ts > startTs && ts < endTs {
-						markdownStr = markdownStr + "## " + card.Name + "（完成时间: " + util.GetDateString(ts) + ")" + "\n"
+						markdownStr = markdownStr + "## " + card.Name + "（完成时间: " + util.GetDateStringWithFormat(ts, "2006-01-02") + ")" + "\n"
 						markdownStr = markdownStr + card.Desc + "\n\n"
 
 						lists, _ := card.Checklists()
