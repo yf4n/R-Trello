@@ -2,9 +2,10 @@ package util
 
 import (
 	"flag"
-	"github.com/larspensjo/config"
 	"log"
 	"os"
+
+	"github.com/larspensjo/config"
 )
 
 var configFile = flag.String("configfile", os.Getenv("HOME")+"/.R/config.ini", "General configuration file")
