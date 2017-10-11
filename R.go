@@ -6,6 +6,8 @@ import (
 
 	"github.com/VojtechVitek/go-trello"
 	"github.com/faaaar/R/util"
+	"github.com/microcosm-cc/bluemonday"
+	"github.com/russross/blackfriday"
 )
 
 var p = log.Println
@@ -31,6 +33,10 @@ func main() {
 	p(markdownStr)
 	p("正在生成markdown到" + outputPath + "...")
 	util.WriteFile(outputPath+"/"+util.GetTodayDateString()+".md", markdownStr)
+	unsafe := blackfriday.MarkdownCommon([]byte(markdownStr))
+	html := bluemonday.UGCPolicy().SanitizeBytes(unsafe)
+	util.WriteFile(outputPath+"/"+util.GetTodayDateString()+".html", string(html))
+
 	// p("正在发送邮件...")
 	// util.SendMail(outputPath+"/"+util.GetTodayDateString()+".md", "("+startTime+" - "+endTime+")")
 
@@ -40,8 +46,8 @@ func main() {
 func generateReportTitle() string {
 	timeNow := time.Now()
 	startTs, endTs := util.GetWeekDateRange(timeNow)
-	startTime := util.GetDateStringWithFormat(startTs, "2006-01-02")
-	endTime := util.GetDateStringWithFormat(endTs, "2006-01-02")
+	startTime := util.GetDateStringWithFormat(startTs, "2006/01/02")
+	endTime := util.GetDateStringWithFormat(endTs, "2006/01/02")
 
 	return "## " + startTime + " - " + endTime + " 周报 \n\n"
 }
@@ -101,7 +107,7 @@ func generateWeekReport(trello *trello.Client, startTs int64, endTs int64) strin
 						for _, label := range card.Labels {
 							typeStr += label.Name + " | "
 						}
-						markdownStr = markdownStr + "### " + card.Name + "（完成时间: " + util.GetDateStringWithFormat(ts, "2006-01-02") + ")" + "\n\n"
+						markdownStr = markdownStr + "### " + card.Name + "（完成时间: " + util.GetDateStringWithFormat(ts, "2006/01/02") + ")" + "\n\n"
 						markdownStr += typeStr + "\n\n"
 						markdownStr += card.Desc + "\n\n"
 
