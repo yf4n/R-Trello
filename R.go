@@ -26,14 +26,14 @@ func main() {
 	markdownStr += generateReportTitle()
 	markdownStr += generateCurrentWeekReport(trelloClient)
 	markdownStr += generateNextWeekReport(trelloClient)
-	markdownStr += "--\n"
+	markdownStr += "---\n"
 	markdownStr += "*此周报由 周报生成器 0.2 生成*\n"
 	markdownStr += "*开源地址: https://github.com/faaaar/R*\n"
 
 	p(markdownStr)
 	p("正在生成markdown到" + outputPath + "...")
 	util.WriteFile(outputPath+"/"+util.GetTodayDateString()+".md", markdownStr)
-	unsafe := blackfriday.MarkdownCommon([]byte(markdownStr))
+	unsafe := blackfriday.Run([]byte(markdownStr))
 	html := bluemonday.UGCPolicy().SanitizeBytes(unsafe)
 	util.WriteFile(outputPath+"/"+util.GetTodayDateString()+".html", string(html))
 
@@ -116,7 +116,12 @@ func generateWeekReport(trello *trello.Client, startTs int64, endTs int64) strin
 							markdownStr += "#### " + list.Name + "\n"
 
 							for _, item := range list.CheckItems {
-								markdownStr += "- " + item.Name + "\n"
+								p(item.State)
+								if item.State == "complete" {
+									markdownStr += "- [x]" + item.Name + "\n"
+								} else if item.State == "incomplete" {
+									markdownStr += "- [ ]" + item.Name + "\n"
+								}
 							}
 
 							markdownStr += "\n"

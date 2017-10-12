@@ -1,0 +1,21 @@
+hash: 810877ab4d1723074bbf17113c7118b6fd6dc8c3273d77aa1193f8c1622ced23
+updated: 2017-10-12T13:29:56.429598022+08:00
+imports:
+- name: github.com/larspensjo/config
+  version: b6db95dc6321c46dab9cd53d0c85164a27686aa6
+- name: github.com/microcosm-cc/bluemonday
+  version: 68fecaef60268522d2ac3f0123cec9d3bcab7b6e
+- name: github.com/russross/blackfriday
+  version: 187c33ff049bddf24fc5c5b82facfdd62813a552
+- name: github.com/scorredoira/email
+  version: ce6dfab97c7ac801aa09ab6f3275f4534f25734b
+- name: github.com/shurcooL/sanitized_anchor_name
+  version: 86672fcb3f950f35f2e675df2240550f2a50762f
+- name: github.com/VojtechVitek/go-trello
+  version: 4a7db23ac973c12e59e3c781b359005995bb3838
+- name: golang.org/x/net
+  version: a04bdaca5b32abe1c069418fb7088ae607de5bd0
+  subpackages:
+  - html
+  - html/atom
+testImports: []

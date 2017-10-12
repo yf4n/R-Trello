@@ -1,0 +1,8 @@
+package: github.com/faaaar/R
+import:
+- package: github.com/VojtechVitek/go-trello
+  version: ^0.1.0
+- package: github.com/larspensjo/config
+- package: github.com/microcosm-cc/bluemonday
+- package: github.com/scorredoira/email
+- package: github.com/russross/blackfriday
