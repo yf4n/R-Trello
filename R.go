@@ -116,11 +116,10 @@ func generateWeekReport(trello *trello.Client, startTs int64, endTs int64) strin
 							markdownStr += "#### " + list.Name + "\n"
 
 							for _, item := range list.CheckItems {
-								p(item.State)
 								if item.State == "complete" {
-									markdownStr += "- [x]" + item.Name + "\n"
+									markdownStr += "- [x] " + item.Name + "\n"
 								} else if item.State == "incomplete" {
-									markdownStr += "- [ ]" + item.Name + "\n"
+									markdownStr += "- [ ] " + item.Name + "\n"
 								}
 							}
 
