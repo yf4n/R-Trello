@@ -1,6 +1,0 @@
-package: github.com/faaaar/R
-import:
-- package: github.com/VojtechVitek/go-trello
-  version: ~0.1.0
-- package: github.com/larspensjo/config
-- package: github.com/scorredoira/email
